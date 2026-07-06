@@ -5,122 +5,235 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Undangan Tasyakuran Aqiqah - Jennaira Khalisa Dira</title>
     <style>
-        /* Reset margin & padding dasar agar pas di layar */
+        /* Reset & Pengaturan Dasar */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
 
-        /* Latar belakang web dibuat warna krem lembut menyesuaikan palet warna undangan */
+        /* Warna latar luar menggunakan abu-krem desaturasi yang tenang */
         body {
-            background-color: #f7f3f0; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow-x: hidden; /* Mencegah scroll horizontal */
+            background-color: #ebe5df; 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: #5a4a42;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        /* Container Utama Mobile (Berfungsi sebagai Layar HP Simulasi) */
+        .main-container {
+            width: 100%;
+            max-width: 450px;
+            height: 100vh;
+            background-color: #fdfbf7;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            position: relative;
+            
+            /* FITUR UTAMA: Membuat efek ganti halaman otomatis saat di-scroll */
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
         }
 
-        /* Container utama dibatasi maksimal 480px untuk tampilan HP */
-        .invitation-wrapper {
-            max-width: 480px; 
+        /* Menyembunyikan scrollbar agar tampilan bersih seperti aplikasi native */
+        .main-container::-webkit-scrollbar {
+            display: none;
+        }
+        .main-container {
+            -ms-overflow-style: none;  
+            scrollbar-width: none;  
+        }
+
+        /* Struktur Per Halaman (Satu Halaman Penuh Layar) */
+        .page-section {
             width: 100%;
-            margin: 0 auto;
-            background-color: #ffffff;
+            height: 100vh;
+            scroll-snap-align: start; /* Mengunci halaman di awal */
             display: flex;
             flex-direction: column;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            justify-content: center;
+            align-items: center;
+            padding: 30px 20px;
+            position: relative;
+            background-color: #fdfbf7;
         }
 
-        /* Styling untuk container gambar (section) */
-        .img-section {
+        /* Variasi warna latar belakang halaman agar tidak monoton */
+        .page-section:nth-child(even) {
+            background-color: #f7f3ed;
+        }
+
+        /* Judul Section di Atas Gambar */
+        .section-label {
+            font-size: 10pt;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #8c786c;
+            margin-bottom: 15px;
+            font-weight: 600;
+            text-align: center;
+            
+            /* Animasi Awal Judul */
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.6s ease-out 0.2s;
+        }
+
+        /* Bingkai Kartu (Menciptakan Jarak dan Efek Kedalaman) */
+        .card-wrapper {
             width: 100%;
-            border: none;
-            line-height: 0; /* Menghapus jarak kecil di bawah gambar */
+            max-height: 80vh;
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 10px;
+            box-shadow: 0 8px 24px rgba(90, 74, 66, 0.05);
+            border: 1px solid rgba(230, 220, 210, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
             
-            /* CSS AWAL UNTUK ANIMASI: Tersembunyi */
-            opacity: 0; /* Tidak terlihat */
-            transform: translateY(50px); /* Tergeser ke bawah sedikit */
-            
-            /* Transisi yang halus saat muncul */
-            transition: opacity 1.2s ease-out, transform 1s ease-out;
-            
-            /* Pastikan gambar dalam section ini responsif */
-            img {
-                width: 100%;
-                height: auto;
-                display: block;
-            }
+            /* Animasi Awal Gambar */
+            opacity: 0;
+            transform: scale(0.95) translateY(15px);
+            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        /* KELAS CSS YANG DITAMBAHKAN JAVASCRIPT: Menjadikan terlihat */
-        .img-section.visible {
-            opacity: 1; /* Terlihat penuh */
-            transform: translateY(0); /* Kembali ke posisi semula */
+        /* Pengaturan Gambar Agar Presisi & Tidak Terpotong di Berbagai Layar HP */
+        .card-wrapper img {
+            width: 100%;
+            height: auto;
+            max-height: 76vh;
+            object-fit: contain;
+            border-radius: 10px;
         }
 
-        /* Opsional: Tambahkan ruang kosong di paling bawah agar section terakhir bisa muncul sepenuhnya */
-        .final-spacer {
-            height: 100px;
-            background-color: #ffffff;
+        /* KELAS AKTIF (Dicuat oleh JavaScript saat halaman aktif di layar) */
+        .page-section.active .section-label {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .page-section.active .card-wrapper {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        /* Petunjuk Gulir di Halaman Pertama */
+        .scroll-hint {
+            position: absolute;
+            bottom: 15px;
+            font-size: 8pt;
+            color: #a39288;
+            letter-spacing: 1px;
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-5px); }
+            60% { transform: translateY(-2px); }
+        }
+
+        /* Titik Indikator Halaman Samping (Navigasi Kanan) */
+        .nav-indicators {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 10;
+        }
+        .indicator-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: rgba(90, 74, 66, 0.2);
+            transition: all 0.3s ease;
+        }
+        .indicator-dot.active {
+            background-color: #8c786c;
+            transform: scale(1.4);
         }
     </style>
 </head>
 <body>
 
-    <div class="invitation-wrapper">
-        <!-- Bagian 1: Sampul (image_0.png) -->
-        <div class="img-section">
-            <img src="./1.png" alt="Sampul Undangan Aqiqah Jennaira" loading="lazy">
+    <div class="main-container" id="scrollContainer">
+        
+        <div class="page-section active" data-index="0">
+            <h2 class="section-label">Undangan Tasyakuran</h2>
+            <div class="card-wrapper">
+                <img src="./1.png" alt="Sampul Undangan">
+            </div>
+            <div class="scroll-hint">Geser ke bawah ↓</div>
         </div>
 
-        <!-- Bagian 2: Keluarga (image_1.png) -->
-        <div class="img-section">
-            <img src="./2.png" alt="Ilustrasi Keluarga" loading="lazy">
+        <div class="page-section" data-index="1">
+            <h2 class="section-label">Keluarga Bahagia</h2>
+            <div class="card-wrapper">
+                <img src="./2.png" alt="Foto Keluarga">
+            </div>
         </div>
 
-        <!-- Bagian 3: Detail Acara (image_2.png) -->
-        <div class="img-section">
-            <img src="./3.png" alt="Waktu dan Detail Acara Tasyakuran" loading="lazy">
+        <div class="page-section" data-index="2">
+            <h2 class="section-label">Detail Acara</h2>
+            <div class="card-wrapper">
+                <img src="./3.png" alt="Waktu dan Tempat">
+            </div>
         </div>
 
-        <!-- Bagian 4: Lokasi & QR Code (image_3.png) -->
-        <div class="img-section">
-            <img src="./4.png" alt="Denah dan QR Code Lokasi" loading="lazy">
+        <div class="page-section" data-index="3">
+            <h2 class="section-label">Lokasi & Denah</h2>
+            <div class="card-wrapper">
+                <img src="./4.png" alt="Peta Lokasi">
+            </div>
         </div>
 
-        <div class="final-spacer"></div>
     </div>
 
-    <!-- JAVASCRIPT UNTUK MEMICU ANIMASI SAAT SCROLL -->
+    <div class="nav-indicators">
+        <div class="indicator-dot active"></div>
+        <div class="indicator-dot"></div>
+        <div class="indicator-dot"></div>
+        <div class="indicator-dot"></div>
+    </div>
+
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Ambil semua section gambar yang ingin dianimasikan
-            const sections = document.querySelectorAll('.img-section');
+        const container = document.getElementById('scrollContainer');
+        const sections = document.querySelectorAll('.page-section');
+        const dots = document.querySelectorAll('.indicator-dot');
 
-            // Opsi untuk Intersection Observer
-            const options = {
-                root: null, // Menggunakan viewport (layar) sebagai referensi
-                threshold: 0.15, // Picu animasi saat 15% bagian gambar terlihat
-                rootMargin: "0px"
-            };
+        // Menggunakan Intersection Observer untuk mendeteksi halaman mana yang sedang pas di tengah layar
+        const observerOptions = {
+            root: container,
+            style: null,
+            threshold: 0.5 // Memicu perubahan jika 50% bagian halaman sudah masuk layar
+        };
 
-            // Membuat fungsi Observer
-            const observer = new IntersectionObserver(function(entries, observer) {
-                entries.forEach(entry => {
-                    // Jika section masuk ke viewport
-                    if (entry.isIntersecting) {
-                        // Tambahkan kelas .visible untuk memicu animasi CSS
-                        entry.target.classList.add('visible');
-                        // Berhenti mengamati section ini setelah muncul agar tidak berulang
-                        observer.unobserve(entry.target);
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Hapus kelas aktif di semua halaman
+                    sections.forEach(sec => sec.classList.remove('active'));
+                    dots.forEach(dot => dot.classList.remove('active'));
+
+                    // Tambahkan kelas aktif pada halaman yang sedang dilihat
+                    entry.target.classList.add('active');
+                    
+                    // Update indikator titik di bagian kanan
+                    const index = entry.target.getAttribute('data-index');
+                    if(dots[index]) {
+                        dots[index].classList.add('active');
                     }
-                });
-            }, options);
-
-            // Perintahkan observer untuk mengamati setiap section
-            sections.forEach(section => {
-                observer.observe(section);
+                }
             });
-        });
+        }, observerOptions);
+
+        // Daftarkan semua section ke observer
+        sections.forEach(section => observer.observe(section));
     </script>
 
 </body>
