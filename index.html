@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Undangan Aqiqah - Jennaira Khalisa Dira</title>
+    <title>Undangan Tasyakuran Aqiqah - Jennaira Khalisa Dira</title>
     <style>
-        /* Reset margin & padding dasar */
+        /* Reset margin & padding dasar agar pas di layar */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -16,48 +16,112 @@
         body {
             background-color: #f7f3f0; 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            justify-content: center;
+            overflow-x: hidden; /* Mencegah scroll horizontal */
         }
 
-        /* Container dibatasi maksimal 480px agar proporsional di layar HP maupun Desktop */
+        /* Container utama dibatasi maksimal 480px untuk tampilan HP */
         .invitation-wrapper {
             max-width: 480px; 
             width: 100%;
+            margin: 0 auto;
             background-color: #ffffff;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-            animation: fadeIn 1.5s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
 
-        /* Gambar dibuat 100% dari lebar container dan menyatu (tanpa jarak) */
-        .invitation-wrapper img {
+        /* Styling untuk container gambar (section) */
+        .img-section {
             width: 100%;
-            display: block;
             border: none;
+            line-height: 0; /* Menghapus jarak kecil di bawah gambar */
+            
+            /* CSS AWAL UNTUK ANIMASI: Tersembunyi */
+            opacity: 0; /* Tidak terlihat */
+            transform: translateY(50px); /* Tergeser ke bawah sedikit */
+            
+            /* Transisi yang halus saat muncul */
+            transition: opacity 1.2s ease-out, transform 1s ease-out;
+            
+            /* Pastikan gambar dalam section ini responsif */
+            img {
+                width: 100%;
+                height: auto;
+                display: block;
+            }
         }
 
-        /* Efek animasi muncul perlahan saat web pertama kali dibuka */
-        @keyframes fadeIn {
-            from { 
-                opacity: 0; 
-                transform: translateY(20px); 
-            }
-            to { 
-                opacity: 1; 
-                transform: translateY(0); 
-            }
+        /* KELAS CSS YANG DITAMBAHKAN JAVASCRIPT: Menjadikan terlihat */
+        .img-section.visible {
+            opacity: 1; /* Terlihat penuh */
+            transform: translateY(0); /* Kembali ke posisi semula */
+        }
+
+        /* Opsional: Tambahkan ruang kosong di paling bawah agar section terakhir bisa muncul sepenuhnya */
+        .final-spacer {
+            height: 100px;
+            background-color: #ffffff;
         }
     </style>
 </head>
 <body>
 
     <div class="invitation-wrapper">
-        <!-- Gambar-gambar undangan diurutkan dari sampul hingga lokasi -->
-        <img src="./1.png" alt="Sampul Undangan Aqiqah" loading="lazy">
-        <img src="./2.png" alt="Ilustrasi Keluarga" loading="lazy">
-        <img src="./3.png" alt="Waktu dan Detail Acara Tasyakuran" loading="lazy">
-        <img src="./4.png" alt="Denah dan QR Code Lokasi Acara" loading="lazy">
+        <!-- Bagian 1: Sampul (image_0.png) -->
+        <div class="img-section">
+            <img src="./1.png" alt="Sampul Undangan Aqiqah Jennaira" loading="lazy">
+        </div>
+
+        <!-- Bagian 2: Keluarga (image_1.png) -->
+        <div class="img-section">
+            <img src="./2.png" alt="Ilustrasi Keluarga" loading="lazy">
+        </div>
+
+        <!-- Bagian 3: Detail Acara (image_2.png) -->
+        <div class="img-section">
+            <img src="./3.png" alt="Waktu dan Detail Acara Tasyakuran" loading="lazy">
+        </div>
+
+        <!-- Bagian 4: Lokasi & QR Code (image_3.png) -->
+        <div class="img-section">
+            <img src="./4.png" alt="Denah dan QR Code Lokasi" loading="lazy">
+        </div>
+
+        <div class="final-spacer"></div>
     </div>
+
+    <!-- JAVASCRIPT UNTUK MEMICU ANIMASI SAAT SCROLL -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Ambil semua section gambar yang ingin dianimasikan
+            const sections = document.querySelectorAll('.img-section');
+
+            // Opsi untuk Intersection Observer
+            const options = {
+                root: null, // Menggunakan viewport (layar) sebagai referensi
+                threshold: 0.15, // Picu animasi saat 15% bagian gambar terlihat
+                rootMargin: "0px"
+            };
+
+            // Membuat fungsi Observer
+            const observer = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(entry => {
+                    // Jika section masuk ke viewport
+                    if (entry.isIntersecting) {
+                        // Tambahkan kelas .visible untuk memicu animasi CSS
+                        entry.target.classList.add('visible');
+                        // Berhenti mengamati section ini setelah muncul agar tidak berulang
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, options);
+
+            // Perintahkan observer untuk mengamati setiap section
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
 
 </body>
 </html>
