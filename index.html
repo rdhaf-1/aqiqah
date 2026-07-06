@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Undangan Aqiqah - Jennaira Khalisa Dira</title>
+    <style>
+        /* Reset margin & padding dasar */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Latar belakang web dibuat warna krem lembut menyesuaikan palet warna undangan */
+        body {
+            background-color: #f7f3f0; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Container dibatasi maksimal 480px agar proporsional di layar HP maupun Desktop */
+        .invitation-wrapper {
+            max-width: 480px; 
+            width: 100%;
+            background-color: #ffffff;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        /* Gambar dibuat 100% dari lebar container dan menyatu (tanpa jarak) */
+        .invitation-wrapper img {
+            width: 100%;
+            display: block;
+            border: none;
+        }
+
+        /* Efek animasi muncul perlahan saat web pertama kali dibuka */
+        @keyframes fadeIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(20px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="invitation-wrapper">
+        <!-- Gambar-gambar undangan diurutkan dari sampul hingga lokasi -->
+        <img src="1.jpg" alt="Sampul Undangan Aqiqah" loading="lazy">
+        <img src="2.jpg" alt="Ilustrasi Keluarga" loading="lazy">
+        <img src="3.jpg" alt="Waktu dan Detail Acara Tasyakuran" loading="lazy">
+        <img src="4.jpg" alt="Denah dan QR Code Lokasi Acara" loading="lazy">
+    </div>
+
+</body>
+</html>
