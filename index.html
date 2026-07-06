@@ -12,7 +12,6 @@
             padding: 0;
         }
 
-        /* Warna latar luar menggunakan abu-krem desaturasi yang tenang */
         body {
             background-color: #ebe5df; 
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -23,7 +22,6 @@
             min-height: 100vh;
         }
         
-        /* Container Utama Mobile (Berfungsi sebagai Layar HP Simulasi) */
         .main-container {
             width: 100%;
             max-width: 450px;
@@ -31,27 +29,20 @@
             background-color: #fdfbf7;
             box-shadow: 0 10px 30px rgba(0,0,0,0.08);
             position: relative;
-            
-            /* FITUR UTAMA: Membuat efek ganti halaman otomatis saat di-scroll */
             overflow-y: scroll;
             scroll-snap-type: y mandatory;
             scroll-behavior: smooth;
-        }
-
-        /* Menyembunyikan scrollbar agar tampilan bersih seperti aplikasi native */
-        .main-container::-webkit-scrollbar {
-            display: none;
-        }
-        .main-container {
             -ms-overflow-style: none;  
             scrollbar-width: none;  
         }
+        .main-container::-webkit-scrollbar {
+            display: none;
+        }
 
-        /* Struktur Per Halaman (Satu Halaman Penuh Layar) */
         .page-section {
             width: 100%;
             height: 100vh;
-            scroll-snap-align: start; /* Mengunci halaman di awal */
+            scroll-snap-align: start;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -60,13 +51,8 @@
             position: relative;
             background-color: #fdfbf7;
         }
+        .page-section:nth-child(even) { background-color: #f7f3ed; }
 
-        /* Variasi warna latar belakang halaman agar tidak monoton */
-        .page-section:nth-child(even) {
-            background-color: #f7f3ed;
-        }
-
-        /* Judul Section di Atas Gambar */
         .section-label {
             font-size: 10pt;
             text-transform: uppercase;
@@ -75,14 +61,11 @@
             margin-bottom: 15px;
             font-weight: 600;
             text-align: center;
-            
-            /* Animasi Awal Judul */
             opacity: 0;
             transform: translateY(-10px);
             transition: all 0.6s ease-out 0.2s;
         }
 
-        /* Bingkai Kartu (Menciptakan Jarak dan Efek Kedalaman) */
         .card-wrapper {
             width: 100%;
             max-height: 80vh;
@@ -94,14 +77,12 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            
-            /* Animasi Awal Gambar */
             opacity: 0;
             transform: scale(0.95) translateY(15px);
             transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            position: relative; /* Penting untuk teks nama tamu */
         }
 
-        /* Pengaturan Gambar Agar Presisi & Tidak Terpotong di Berbagai Layar HP */
         .card-wrapper img {
             width: 100%;
             height: auto;
@@ -110,17 +91,35 @@
             border-radius: 10px;
         }
 
-        /* KELAS AKTIF (Dicuat oleh JavaScript saat halaman aktif di layar) */
-        .page-section.active .section-label {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .page-section.active .card-wrapper {
-            opacity: 1;
-            transform: scale(1) translateY(0);
+        /* --- STYLING KHUSUS UNTUK NAMA TAMU DINAMIS --- */
+        .guest-name-container {
+            position: absolute;
+            /* Angka top: 62% ini adalah perkiraan letak garis pada gambar 1.jpg. 
+               Jika tulisannya kurang pas di atas garis, silakan ubah angka 62% ini (misal ke 60% atau 65%) */
+            top: 62%; 
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            text-align: center;
+            z-index: 5;
         }
 
-        /* Petunjuk Gulir di Halaman Pertama */
+        .guest-name-text {
+            font-family: 'Georgia', serif; /* Font klasik/elegan */
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #6a5344;
+            letter-spacing: 1px;
+            /* Latar belakang semi-transparan sedikit untuk memastikan teks terbaca di atas gambar */
+            background-color: rgba(253, 251, 247, 0.6); 
+            padding: 2px 15px;
+            border-radius: 8px;
+        }
+        /* ---------------------------------------------- */
+
+        .page-section.active .section-label { opacity: 1; transform: translateY(0); }
+        .page-section.active .card-wrapper { opacity: 1; transform: scale(1) translateY(0); }
+
         .scroll-hint {
             position: absolute;
             bottom: 15px;
@@ -135,7 +134,6 @@
             60% { transform: translateY(-2px); }
         }
 
-        /* Titik Indikator Halaman Samping (Navigasi Kanan) */
         .nav-indicators {
             position: absolute;
             right: 15px;
@@ -153,24 +151,29 @@
             background-color: rgba(90, 74, 66, 0.2);
             transition: all 0.3s ease;
         }
-        .indicator-dot.active {
-            background-color: #8c786c;
-            transform: scale(1.4);
-        }
+        .indicator-dot.active { background-color: #8c786c; transform: scale(1.4); }
     </style>
 </head>
 <body>
 
     <div class="main-container" id="scrollContainer">
         
+        <!-- HALAMAN 1: SAMPUL -->
         <div class="page-section active" data-index="0">
             <h2 class="section-label">Undangan Tasyakuran</h2>
             <div class="card-wrapper">
                 <img src="./1.png" alt="Sampul Undangan">
+                
+                <!-- ELEMEN NAMA TAMU MUNCUL DI SINI -->
+                <div class="guest-name-container">
+                    <span class="guest-name-text" id="guestNameOutput">Nama Tamu</span>
+                </div>
+                
             </div>
             <div class="scroll-hint">Geser ke bawah ↓</div>
         </div>
 
+        <!-- HALAMAN 2: KELUARGA -->
         <div class="page-section" data-index="1">
             <h2 class="section-label">Keluarga Bahagia</h2>
             <div class="card-wrapper">
@@ -178,6 +181,7 @@
             </div>
         </div>
 
+        <!-- HALAMAN 3: DETAIL ACARA -->
         <div class="page-section" data-index="2">
             <h2 class="section-label">Detail Acara</h2>
             <div class="card-wrapper">
@@ -185,6 +189,7 @@
             </div>
         </div>
 
+        <!-- HALAMAN 4: LOKASI MAPS -->
         <div class="page-section" data-index="3">
             <h2 class="section-label">Lokasi & Denah</h2>
             <div class="card-wrapper">
@@ -194,6 +199,7 @@
 
     </div>
 
+    <!-- Navigasi Titik Samping -->
     <div class="nav-indicators">
         <div class="indicator-dot active"></div>
         <div class="indicator-dot"></div>
@@ -201,29 +207,42 @@
         <div class="indicator-dot"></div>
     </div>
 
+    <!-- JAVASCRIPT ANIMASI DAN URL PARAMETER -->
     <script>
+        // --- SCRIPT 1: MENGAMBIL NAMA DARI LINK ---
+        document.addEventListener("DOMContentLoaded", function() {
+            // Membaca link URL (contoh: ?to=Budi+Santoso)
+            const urlParams = new URLSearchParams(window.location.search);
+            const guestName = urlParams.get('to');
+            
+            // Jika ada parameter 'to', ganti teksnya. Jika tidak, kosongkan.
+            const nameElement = document.getElementById('guestNameOutput');
+            if (guestName) {
+                nameElement.textContent = guestName;
+            } else {
+                nameElement.style.display = 'none'; // Sembunyikan jika link tidak ada namanya
+            }
+        });
+
+        // --- SCRIPT 2: ANIMASI SCROLL HALAMAN ---
         const container = document.getElementById('scrollContainer');
         const sections = document.querySelectorAll('.page-section');
         const dots = document.querySelectorAll('.indicator-dot');
 
-        // Menggunakan Intersection Observer untuk mendeteksi halaman mana yang sedang pas di tengah layar
         const observerOptions = {
             root: container,
             style: null,
-            threshold: 0.5 // Memicu perubahan jika 50% bagian halaman sudah masuk layar
+            threshold: 0.5
         };
 
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    // Hapus kelas aktif di semua halaman
                     sections.forEach(sec => sec.classList.remove('active'));
                     dots.forEach(dot => dot.classList.remove('active'));
 
-                    // Tambahkan kelas aktif pada halaman yang sedang dilihat
                     entry.target.classList.add('active');
                     
-                    // Update indikator titik di bagian kanan
                     const index = entry.target.getAttribute('data-index');
                     if(dots[index]) {
                         dots[index].classList.add('active');
@@ -232,7 +251,6 @@
             });
         }, observerOptions);
 
-        // Daftarkan semua section ke observer
         sections.forEach(section => observer.observe(section));
     </script>
 
